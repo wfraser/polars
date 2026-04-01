@@ -15,7 +15,8 @@ pub(super) fn convert_functions(
     function: FunctionExpr,
     ctx: &mut ExprToIRContext,
 ) -> PolarsResult<(Node, PlSmallStr)> {
-    use {FunctionExpr as F, IRFunctionExpr as I};
+    use FunctionExpr as F;
+    use IRFunctionExpr as I;
 
     // Converts inputs
     let input_is_empty = input.is_empty();
@@ -26,7 +27,8 @@ pub(super) fn convert_functions(
     let ir_function = match function {
         #[cfg(feature = "dtype-array")]
         F::ArrayExpr(array_function) => {
-            use {ArrayFunction as A, IRArrayFunction as IA};
+            use ArrayFunction as A;
+            use IRArrayFunction as IA;
             I::ArrayExpr(match array_function {
                 A::Length => IA::Length,
                 A::Min => IA::Min,
@@ -62,7 +64,8 @@ pub(super) fn convert_functions(
             })
         },
         F::BinaryExpr(binary_function) => {
-            use {BinaryFunction as B, IRBinaryFunction as IB};
+            use BinaryFunction as B;
+            use IRBinaryFunction as IB;
             I::BinaryExpr(match binary_function {
                 B::Contains => IB::Contains,
                 B::StartsWith => IB::StartsWith,
@@ -99,7 +102,8 @@ pub(super) fn convert_functions(
         },
         #[cfg(feature = "dtype-categorical")]
         F::Categorical(categorical_function) => {
-            use {CategoricalFunction as C, IRCategoricalFunction as IC};
+            use CategoricalFunction as C;
+            use IRCategoricalFunction as IC;
             I::Categorical(match categorical_function {
                 C::GetCategories => IC::GetCategories,
                 #[cfg(feature = "strings")]
@@ -116,7 +120,8 @@ pub(super) fn convert_functions(
         },
         #[cfg(feature = "dtype-extension")]
         F::Extension(extension_function) => {
-            use {ExtensionFunction as E, IRExtensionFunction as IE};
+            use ExtensionFunction as E;
+            use IRExtensionFunction as IE;
             I::Extension(match extension_function {
                 E::To(dtype) => {
                     let concrete_dtype = dtype.into_datatype(ctx.schema)?;
@@ -129,7 +134,8 @@ pub(super) fn convert_functions(
             })
         },
         F::ListExpr(list_function) => {
-            use {IRListFunction as IL, ListFunction as L};
+            use IRListFunction as IL;
+            use ListFunction as L;
             I::ListExpr(match list_function {
                 L::Concat => IL::Concat,
                 #[cfg(feature = "is_in")]
@@ -188,7 +194,8 @@ pub(super) fn convert_functions(
         },
         #[cfg(feature = "strings")]
         F::StringExpr(string_function) => {
-            use {IRStringFunction as IS, StringFunction as S};
+            use IRStringFunction as IS;
+            use StringFunction as S;
             I::StringExpr(match string_function {
                 S::Format { format, insertions } => {
                     if input_is_empty {
@@ -338,7 +345,8 @@ pub(super) fn convert_functions(
         },
         #[cfg(feature = "dtype-struct")]
         F::StructExpr(struct_function) => {
-            use {IRStructFunction as IS, StructFunction as S};
+            use IRStructFunction as IS;
+            use StructFunction as S;
             I::StructExpr(match struct_function {
                 S::FieldByName(pl_small_str) => IS::FieldByName(pl_small_str),
                 S::RenameFields(pl_small_strs) => IS::RenameFields(pl_small_strs),
@@ -352,7 +360,8 @@ pub(super) fn convert_functions(
         },
         #[cfg(feature = "temporal")]
         F::TemporalExpr(temporal_function) => {
-            use {IRTemporalFunction as IT, TemporalFunction as T};
+            use IRTemporalFunction as IT;
+            use TemporalFunction as T;
             I::TemporalExpr(match temporal_function {
                 T::Millennium => IT::Millennium,
                 T::Century => IT::Century,
@@ -437,7 +446,8 @@ pub(super) fn convert_functions(
             BitwiseFunction::Xor => IRBitwiseFunction::Xor,
         }),
         F::Boolean(boolean_function) => {
-            use {BooleanFunction as B, IRBooleanFunction as IB};
+            use BooleanFunction as B;
+            use IRBooleanFunction as IB;
             I::Boolean(match boolean_function {
                 B::Any { ignore_nulls } => IB::Any { ignore_nulls },
                 B::All { ignore_nulls } => IB::All { ignore_nulls },
@@ -696,7 +706,8 @@ pub(super) fn convert_functions(
         }),
         #[cfg(feature = "trigonometry")]
         F::Trigonometry(trigonometric_function) => {
-            use {IRTrigonometricFunction as IT, TrigonometricFunction as T};
+            use IRTrigonometricFunction as IT;
+            use TrigonometricFunction as T;
             I::Trigonometry(match trigonometric_function {
                 T::Cos => IT::Cos,
                 T::Cot => IT::Cot,
@@ -901,7 +912,8 @@ pub(super) fn convert_functions(
         F::ConcatExpr(v) => I::ConcatExpr(v),
         #[cfg(feature = "cov")]
         F::Correlation { method } => {
-            use {CorrelationMethod as C, IRCorrelationMethod as IC};
+            use CorrelationMethod as C;
+            use IRCorrelationMethod as IC;
             I::Correlation {
                 method: match method {
                     C::Pearson => IC::Pearson,
@@ -948,7 +960,8 @@ pub(super) fn convert_functions(
         F::ToPhysical => I::ToPhysical,
         #[cfg(feature = "random")]
         F::Random { method, seed } => {
-            use {IRRandomMethod as IR, RandomMethod as R};
+            use IRRandomMethod as IR;
+            use RandomMethod as R;
             I::Random {
                 method: match method {
                     R::Shuffle => IR::Shuffle,
